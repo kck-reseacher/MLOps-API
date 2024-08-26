@@ -1,0 +1,83 @@
+services:
+  mls:
+    image: aiops/mls:latest
+    container_name: mls
+    user: root
+    volumes:
+      - /home/aiops/xaiops-log/mlops:/root/ai-log
+      - /home/aiops/ai-home:/root/ai-home
+    ports:
+      - 19000:19000
+    networks:
+      mlops-service-network:
+        ipv4_address: 172.72.0.2
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    command: ["/bin/bash", "-c", "./service_gunicorn.sh"]
+
+  mlc:
+    image: aiops/mlc:latest
+    container_name: mlc
+    user: root
+    volumes:
+      - /home/aiops/xaiops-log/mlops:/root/ai-log
+      - /home/aiops/ai-home:/root/ai-home
+    ports:
+      - 12589:12589
+    networks:
+      mlops-service-network:
+        ipv4_address: 172.72.0.3
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    command: ["/bin/bash", "-c", "./service.sh"]
+
+  nginx:
+    image: aiops/nginx:latest
+    container_name: nginx
+    user: root
+    volumes:
+      - /home/aiops/ai-module/nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - 17776:17776
+      - 17777:17777
+    networks:
+      mlops-service-network:
+        ipv4_address: 172.72.0.4
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
+  redisai:
+    image: aiops/redisai:latest
+    container_name: redisai
+    user: root
+    ports:
+     - 17778:6379
+    networks:
+      mlops-service-network:
+        ipv4_address: 172.72.0.5
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    command: redis-server /home/redis.conf
+
+  srs:
+    image: aiops/srs:latest
+    container_name: srs
+    user: root
+    volumes:
+      - /home/aiops/xaiops-log/mlops:/root/ai-log
+      - /home/aiops/ai-home:/root/ai-home
+    networks:
+      mlops-service-network:
+        ipv4_address: 172.72.0.7
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    command: ["/bin/bash", "-c", "./service_consumer.sh"]
+
+networks:
+  mlops-service-network:
+      driver: bridge
+      ipam:
+        driver: default
+        config:
+        - subnet: 172.72.0.0/16
+      name: mlops-service-network

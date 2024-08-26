@@ -1,0 +1,50 @@
+{
+	"postgres": {
+		"host": "MTAuMTAuMzcuNzE=",
+		"port": "MTU0MzI=",
+		"database": "cG9zdGdyZXM=",
+		"id": "cG9zdGdyZXM=",
+		"password": "ZGMoN0YwMEwoZG5LR34mZA=="
+	},
+	"logpresso":{
+        "host": "MTAuMTAuMzQuMjE=",
+        "port": "MTg4ODg=",
+        "id": "YWlfc3BhcnNlX2Rldg==",
+        "password": "YWlhaWFpYWkxQCM="
+    },
+	"api_server": {
+		"host": "10.10.37.72",
+		"port": "14569"
+	},
+	"serving_server": {
+        "host": "10.10.37.73",
+        "port": "14567"
+    },
+	"module_api_server": {
+		"host": "172.72.0.3",
+		"port": "12589"
+	},
+	"redis_server": {
+		"master": {
+			"host": "172.72.0.5",
+			"port": "6379"
+		},
+	  "slave": {
+			"host": "10.10.37.72",
+			"port": "17778"
+		}
+    },
+	"be_redis": {
+		"host": "10.10.37.71",
+		"port": "16379"
+	},
+	"sys_id": "102",
+	"use_slave_server": true,
+	"use_integration_log": false,
+	"uvicorn_worker": {
+		"exem_aiops_anls_inst_multi": 2,
+		"exem_aiops_anls_service": 1,
+		"exem_aiops_fcst": 1,
+		"exem_aiops_anls_log_multi": 1
+	}
+}

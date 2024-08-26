@@ -1,0 +1,38 @@
+FROM python:3.8.16
+
+ENV AIMODULE_HOME=/root/ai-home \
+    AIMODULE_PATH=/root/ai-module/mlops-mlc \
+    AIMODULE_LOG_PATH=/root/ai-log \
+    AIMODULE_SERVER_ENV=dev \
+    AIMODULE_LOGGER_ENV=dev \
+    MLOPS_SERVER_ENV=master \
+    GPU_MIG=false
+
+ENV TZ=Asia/Seoul
+
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+WORKDIR /root
+
+RUN apt-get update && apt-get install -y wget
+
+RUN apt-get install -y curl vim g++ ntp
+
+RUN mkdir ai-home ai-module ai-log
+
+COPY ./ /root/ai-module/mlops-mlc
+
+WORKDIR /root/ai-module/mlops-mlc/package
+RUN pip install -r ./requirements.txt && \
+    pip install rejson
+
+RUN echo 'alias logs="cd \$AIMODULE_LOG_PATH"' >> ~/.bashrc \
+    && echo 'alias model="cd \$AIMODULE_HOME/model"' >> ~/.bashrc \
+    && echo 'alias module="cd \$AIMODULE_PATH"' >> ~/.bashrc \
+    && echo 'alias s="ps -ef | grep serving | grep -v grep"' >> ~/.bashrc \
+    && echo 'alias t="ps -ef | grep train.py | grep -v grep"' >> ~/.bashrc \
+    && echo 'alias ml="ps -ef | grep ml_controller | grep -v grep"' >> ~/.bashrc
+
+WORKDIR /root/ai-module/mlops-mlc
+RUN chmod -R 777 ./*
+
